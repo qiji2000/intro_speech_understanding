@@ -16,8 +16,14 @@ def center_of_gravity(x):
     @result:
     c (scalar): x's center of gravity
     '''
-    c = 0  # change this line
+    n = len(x) - 1
+    indices = np.arange(n + 1)
+    c = np.dot(indices, x) / np.sum(x)
     return c
+x_example = np.array([1, 2, 3, 2, 1])
+result = center_of_gravity(x_example)
+
+print("Center of gravity (c):", result)
 
 def matched_identity(x):
     '''
@@ -30,8 +36,17 @@ def matched_identity(x):
     @result:
     I (array): a 2d numpy array: an NxN identity matrix
     '''
-    I =  0 # change this line
+     N = len(x)
+    I = np.eye(N)
     return I
+
+# Example usage with the vector x=[1,2,3,2,1]
+x_example = np.array([1, 2, 3, 2, 1])
+identity_matrix = matched_identity(x_example)
+
+print("Input vector:", x_example)
+print("Identity matrix:")
+print(identity_matrix)
 
 def sine_and_cosine(t_start, t_end, t_steps):
     '''
@@ -49,8 +64,9 @@ def sine_and_cosine(t_start, t_end, t_steps):
     y (array of length t_steps): sin(t)
     '''
     # change these lines
-    t = 0 
-    x = 0
-    y = 0
+    t = np.linspace(t_start, t_end, t_steps)
+    x = np.cos(t)
+    y = np.sin(t)
+
     # end changes here
     return t, x, y
