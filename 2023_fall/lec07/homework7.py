@@ -15,7 +15,11 @@ def voiced_excitation(duration, F0, Fs):
       excitation[n] = 0 otherwise
     '''
     excitation = np.zeros(duration) 
-    pass # change this
+    period = int(np.round(Fs / F0))
+    
+    for n in range(duration):
+        if n % period == 0:
+            excitation[n] = -1
     return excitation
 
 def resonator(x, F, BW, Fs):
@@ -32,7 +36,13 @@ def resonator(x, F, BW, Fs):
     y (np.ndarray(N)) - resonant output
     '''
     y = np.zeros(len(x)) 
-    pass # change this
+    w0 = 2 * np.pi * F / Fs
+    alpha = np.sin(w0) * np.sinh((np.log(2) / 2) * BW * w0 / np.sin(w0))
+    beta = np.sqrt(1 - alpha**2)
+
+    for n in range(2, len(x)):
+        y[n] = alpha * x[n] - alpha * x[n-1] + beta * y[n-1] - alpha * beta * y[n-2]
+
     return y
 
 def synthesize_vowel(duration,F0,F1,F2,F3,F4,BW1,BW2,BW3,BW4,Fs):
@@ -55,6 +65,18 @@ def synthesize_vowel(duration,F0,F1,F2,F3,F4,BW1,BW2,BW3,BW4,Fs):
     @returns:
     speech (np.ndarray(samples)) - synthesized vowel
     '''
-    speech = np.zeros(duration) # change this
+     speech = np.zeros(duration)
+    
+    # Generate pitch using a sinusoidal waveform
+    t = np.arange(0, duration) / Fs
+    pitch = 0.5 * np.sin(2 * np.pi * F0 * t)
+    
+    # Generate formants using resonators
+    formant1 = resonator(pitch, F1, BW1, Fs)
+    formant2 = resonator(pitch, F2, BW2, Fs)
+    formant3 = resonator(pitch, F3, BW3, Fs)
+    formant4 = resonator(pitch, F4, BW4, Fs)
+    
+    speech = formant1 + formant2 + formant3 + formant4
     return speech
     
